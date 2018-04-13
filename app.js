@@ -4,16 +4,23 @@ new Vue({
     data: {
         playerHealth: 100,
         monsterHealth: 100,
-        gameIsRunning: false
+        gameIsRunning: false,
+        turns: []
     },
     methods: {
         startGame: function(){
             this.gameIsRunning = true;
             this.playerHealth = 100;
             this.monsterHealth = 100;
+            this.turns = [];
         },
         attack: function(){
-            this.monsterHealth -= this.calculateDamage(3,10);
+            var damage = this.calculateDamage(3,10);
+            this.monsterHealth -= damage;
+            this.turns.unshift({
+                isPlayer: true,
+                text: 'Player hits monster for ' + damage
+            })
             if(this.checkWin()){
                 return;
             }
@@ -21,7 +28,12 @@ new Vue({
             this.monsterAttacks();
         },
         specialAttack: function(){
-            this.monsterHealth -= this.calculateDamage(10,20);
+            var damage = this.calculateDamage(10,20);
+            this.monsterHealth -= damage;
+            this.turns.unshift({
+                isPlayer: true,
+                text: 'Player hits monster for hard ' + damage
+            })
             if(this.checkWin()){
                 return;
             }
@@ -42,7 +54,12 @@ new Vue({
             this.gameIsRunning = false;
         },
         monsterAttacks: function(){
-            this.playerHealth -= this.calculateDamage(5,12);
+            var damage = this.calculateDamage(5,12);
+            this.playerHealth -= damage;
+            this.turns.unshift({
+                isPlayer: false,
+                text: 'Monster hits player for ' + damage
+            })
             this.checkWin();
         },
         calculateDamage: function(min,max){
